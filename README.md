@@ -77,7 +77,7 @@ src/support_triage/
 kb/                help-centre articles (markdown)
 evals/             dataset.jsonl, LABELING.md, run_eval.py, judge.py, spot_check.py, results/
 tests/             offline routing + webhook tests (fake LLM)
-.github/workflows  tests on every push; paid eval on manual run or `run-evals` PR label
+.github/workflows  free CI: tests + retrieval check on every push (no API calls)
 ```
 
 ## Evals
@@ -160,7 +160,7 @@ Total API spend for all of the above: about **$8**.
 
 **Week 4: ship and present**
 - [ ] Deploy the FastAPI app (Render, Railway or Vercel), with secrets in env vars
-- [x] GitHub Actions: tests on every push; paid eval on demand, which fails on any unsafe auto-reply
+- [x] GitHub Actions: free tests + retrieval check on every push. Paid evals run locally, and the eval script exits non-zero on any unsafe auto-reply
 - [ ] Record a 2-minute Loom: one ticket auto-replied, one escalated to Slack, then the eval table
 - [ ] Finish this README: problem, results, what you'd improve
 
