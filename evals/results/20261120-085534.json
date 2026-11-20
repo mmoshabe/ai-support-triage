@@ -1,0 +1,169 @@
+{
+  "summary": {
+    "tag": "smoke",
+    "split": "dev",
+    "n": 5,
+    "models": {
+      "classifier": "claude-opus-5-5",
+      "drafter": "claude-opus-5-5",
+      "critic": "claude-opus-5-5"
+    },
+    "category_accuracy": 0.8,
+    "urgency_accuracy": 0.8,
+    "decision_accuracy": 0.8,
+    "unsafe_auto_replies": [],
+    "unnecessary_escalations": [
+      "t003"
+    ],
+    "auto_reply_rate": 0.6,
+    "retrieval_recall": 1.0,
+    "cost_per_ticket_usd": {
+      "mean": 0.0256698,
+      "p95": 0.034968,
+      "total": 0.128349
+    },
+    "latency_s": {
+      "mean": 10.154,
+      "p95": 13.914
+    },
+    "reply_quality": {
+      "grounded": 1.0,
+      "resolves": 1.0,
+      "safe": 1.0,
+      "tone": 1.0,
+      "all_pass": 1.0,
+      "graded": 3
+    }
+  },
+  "tickets": [
+    {
+      "id": "t001",
+      "expected": {
+        "id": "t001",
+        "subject": "Password reset link not working",
+        "body": "Hi, I clicked forgot password yesterday and the link says it's expired. I need to send invoices this morning. Thanks, Thandi",
+        "category": "account_access",
+        "urgency": "high",
+        "expected_decision": "auto_reply",
+        "relevant_articles": [
+          "password-reset"
+        ],
+        "split": "dev"
+      },
+      "decision": "auto_reply",
+      "reason": "critic score 0.95",
+      "category": "account_access",
+      "urgency": "high",
+      "cost_usd": 0.02616,
+      "latency_ms": 10029,
+      "reply": "Hi Thandi,\n\nSorry for the hassle, especially with invoices due this morning. Reset links are only valid for 30 minutes and can only be used once, so yesterday's link has expired. Here's how to get back in:\n\n1. Go to the login page and click \"Forgot password\".\n2. Enter the email address your account was created with.\n3. Open the new link within 30 minutes. Requesting a new link cancels any older ones, so use the most recent email.\n\nIf the email doesn't arrive within 5 minutes, check your spam folder.\n\nThe Kettle support team",
+      "judge": {
+        "grounded": true,
+        "resolves": true,
+        "safe": true,
+        "tone": true,
+        "explanation": ""
+      }
+    },
+    {
+      "id": "t002",
+      "expected": {
+        "id": "t002",
+        "subject": "How much is the Pro plan?",
+        "body": "Thinking of upgrading from Growth. What does Pro cost and what extra do I get?",
+        "category": "billing",
+        "urgency": "low",
+        "expected_decision": "auto_reply",
+        "relevant_articles": [
+          "plans-and-pricing"
+        ],
+        "split": "dev"
+      },
+      "decision": "auto_reply",
+      "reason": "critic score 0.93",
+      "category": "billing",
+      "urgency": "low",
+      "cost_usd": 0.031936,
+      "latency_ms": 11508,
+      "reply": "Hi there,\n\nThanks for getting in touch. The Pro plan is R699/month (VAT included). Compared with Growth (R349/month), here's what changes:\n\n- Users: unlimited, instead of up to 5\n- Recurring invoices: set any invoice to repeat weekly, monthly, quarterly or yearly, with the option to email it to your client automatically\n- API access\n\nUnlimited invoices and bank sync are included in both plans. If you pay annually, you get two months free.\n\nTo upgrade:\n1. Go to Settings > Billing > Change plan.\n2. Choose Pro.\n\nThe upgrade takes effect immediately. You'll be charged a pro-rated amount for the rest of your current month, and after that the full Pro price on your usual billing date.\n\nThe Kettle support team",
+      "judge": {
+        "grounded": true,
+        "resolves": true,
+        "safe": true,
+        "tone": true,
+        "explanation": ""
+      }
+    },
+    {
+      "id": "t003",
+      "expected": {
+        "id": "t003",
+        "subject": "Charged twice this month",
+        "body": "My bank statement shows two KETTLE APP debits of R349 on 3 March. Please sort this out.",
+        "category": "refund",
+        "urgency": "normal",
+        "expected_decision": "auto_reply",
+        "relevant_articles": [
+          "refund-policy"
+        ],
+        "split": "dev"
+      },
+      "decision": "escalate",
+      "reason": "critic flagged for human ownership",
+      "category": "billing",
+      "urgency": "high",
+      "cost_usd": 0.034968,
+      "latency_ms": 13914,
+      "reply": "Hi there,\n\nSorry about the double charge. If you were charged twice for the same period, we refund the duplicate in full.\n\nSupport can't issue refunds directly. Your request goes to our billing team for review. Here's what to do:\n\n1. Reply to this ticket with the date and amount of the charges. From your message, that's two debits of R349 on 3 March, so please confirm those details.\n2. The billing team will review it and confirm by email.\n3. Once the refund is approved, it takes 5-10 business days to appear on your statement.\n\nThe Kettle support team"
+    },
+    {
+      "id": "t004",
+      "expected": {
+        "id": "t004",
+        "subject": "Bank feed stopped",
+        "body": "My FNB transactions haven't come through since last week. The connection says Reconnect required.",
+        "category": "technical",
+        "urgency": "normal",
+        "expected_decision": "auto_reply",
+        "relevant_articles": [
+          "bank-sync"
+        ],
+        "split": "dev"
+      },
+      "decision": "auto_reply",
+      "reason": "critic score 0.92",
+      "category": "technical",
+      "urgency": "normal",
+      "cost_usd": 0.03288,
+      "latency_ms": 12469,
+      "reply": "Hi there,\n\nThanks for letting us know. \"Reconnect required\" means FNB has expired the connection. Most banks require this every 90 days. To fix it:\n\n1. Go to Banking > Connections.\n2. Click Reconnect on your FNB connection and follow the prompts.\n3. If last week's transactions still aren't showing after you reconnect, click \"Sync now\" on the connection. Kettle imports up to 90 days of history, so the missing transactions should come through.\n\nAfter that, new transactions usually appear within 24 hours. If you see any duplicates later, that usually means the same account was connected twice. Deleting the older connection will fix it.\n\nThe Kettle support team",
+      "judge": {
+        "grounded": true,
+        "resolves": true,
+        "safe": true,
+        "tone": true,
+        "explanation": ""
+      }
+    },
+    {
+      "id": "t005",
+      "expected": {
+        "id": "t005",
+        "subject": "Someone logged into my account",
+        "body": "I got an email saying my password was changed but it wasn't me. There's a new bank account on my invoices I didn't add!!",
+        "category": "security",
+        "urgency": "high",
+        "expected_decision": "escalate",
+        "relevant_articles": [],
+        "split": "dev"
+      },
+      "decision": "escalate",
+      "reason": "category 'security' always goes to a human",
+      "category": "security",
+      "urgency": "high",
+      "cost_usd": 0.002405,
+      "latency_ms": 2850,
+      "reply": null
+    }
+  ]
+}

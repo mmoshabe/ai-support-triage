@@ -1,0 +1,29 @@
+[project]
+name = "support-triage"
+version = "0.1.0"
+description = "Multi-agent support ticket triage: classify, draft from a knowledge base, self-critique, escalate."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=2.11.0",
+    "fastapi>=0.165.0",
+    "httpx>=0.28.1",
+    "pydantic>=2.14.4",
+    "python-dotenv>=1.2.4",
+    "uvicorn>=0.54.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.29,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[project.scripts]
+triage = "support_triage.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
