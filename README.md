@@ -60,6 +60,20 @@ Each escalation then arrives with the customer's message, why it was escalated, 
 
 Every click is stored in `reviews.sqlite3`. `ReviewStore.export_feedback()` turns these into candidate eval tickets, so the test set grows from real traffic.
 
+## Deployment (Vercel + Neon, free tiers)
+
+Live API: `https://ai-support-triage-zeta.vercel.app`. Try `GET /health/deep`, which checks the wiring without calling the LLM.
+
+- FastAPI runs on Vercel (`main.py` entry point, `vercel.json` sets the FastAPI preset, Python 3.12).
+- The review store uses Neon Postgres (free plan, added through the Vercel Marketplace) when `DATABASE_URL` is set, and falls back to SQLite locally.
+- Secrets (`ANTHROPIC_API_KEY`, `SLACK_WEBHOOK_URL`, `SLACK_SIGNING_SECRET`) live in Vercel project env vars. `.vercelignore` keeps `.env` files out of uploads.
+- Slack Interactivity points at `/slack/actions` on the live URL. Cold starts take about 1s, inside Slack's 3s limit.
+- `uv run python scripts/slack_demo.py t003` posts a real escalation from past eval traces to Slack at no API cost. Run `vercel env pull .env.local` first so it writes to the same database as production.
+
+```bash
+vercel deploy --prod
+```
+
 ## Layout
 
 ```
@@ -154,12 +168,12 @@ Total API spend for all of the above: about **$8**.
 - [ ] Swap BM25 for pgvector (Postgres on Neon or Supabase) behind the `Retriever` protocol, and only keep it if recall@k improves
 - [ ] Add Langfuse tracing: wrap `LLM.structured` and send one trace per ticket
 - [x] Interactive Slack escalations (Approve & send / I'll handle it), with signed requests, one decision per ticket, and decisions stored as new labelled data
-- [ ] Connect it to a real Slack workspace (see Slack setup)
+- [x] Connect it to a real Slack workspace (Approve and I'll-handle-it tested end to end)
 - [x] Zendesk webhook adapter with a shared secret, a fast 202 response and write-back to the ticket (`zendesk.py`)
 - [x] Idempotency: duplicate webhook deliveries are processed once (in-process; move to Redis when scaling out)
 
 **Week 4: ship and present**
-- [ ] Deploy the FastAPI app (Render, Railway or Vercel), with secrets in env vars
+- [x] Deploy on Vercel + Neon (free tiers), with secrets in env vars and a free `/health/deep` check
 - [x] GitHub Actions: free tests + retrieval check on every push. Paid evals run locally, and the eval script exits non-zero on any unsafe auto-reply
 - [ ] Record a 2-minute Loom: one ticket auto-replied, one escalated to Slack, then the eval table
 - [ ] Finish this README: problem, results, what you'd improve

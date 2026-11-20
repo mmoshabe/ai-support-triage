@@ -14,6 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 # Load secrets (ANTHROPIC_API_KEY, SLACK_WEBHOOK_URL, ...) from a gitignored .env.
 # Real environment variables win over the file.
 load_dotenv(PROJECT_ROOT / ".env", override=False)
+load_dotenv(PROJECT_ROOT / ".env.local", override=False)  # from `vercel env pull` (DATABASE_URL)
 
 # USD per 1M tokens: (input, output, cache_read). Used for cost-per-ticket reporting.
 PRICES: dict[str, tuple[float, float, float]] = {
@@ -48,6 +49,7 @@ class Settings:
     )
     slack_webhook_url: str | None = field(default_factory=lambda: os.environ.get("SLACK_WEBHOOK_URL"))
     slack_signing_secret: str | None = field(default_factory=lambda: os.environ.get("SLACK_SIGNING_SECRET"))
+    database_url: str | None = field(default_factory=lambda: os.environ.get("DATABASE_URL"))
     review_db: Path = field(
         default_factory=lambda: Path(_env("TRIAGE_REVIEW_DB", str(PROJECT_ROOT / "reviews.sqlite3")))
     )

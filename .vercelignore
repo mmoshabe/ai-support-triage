@@ -1,0 +1,12 @@
+.env
+.env.local
+.env.*.local
+.venv
+traces.jsonl
+reviews.sqlite3
+evals/results
+evals/spot_check.md
+tests
+.pytest_cache
+**/__pycache__
+**/.DS_Store

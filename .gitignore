@@ -13,3 +13,5 @@ traces.jsonl
 .env
 reviews.sqlite3
 .DS_Store
+.vercel
+.env*

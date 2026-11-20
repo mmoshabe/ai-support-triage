@@ -38,7 +38,7 @@ def main() -> None:
     demo_id = f"demo-{want}-{int(time.time())}"  # unique, so you can click the buttons again on each run
     ticket = Ticket(id=demo_id, subject=row["subject"], body=row["body"])
     result.ticket_id = demo_id
-    make_slack_notifier(s.slack_webhook_url, ReviewStore(s.review_db))(ticket, result)
+    make_slack_notifier(s.slack_webhook_url, ReviewStore(s.review_db, database_url=s.database_url))(ticket, result)
     print(f"posted {demo_id} to Slack ({result.reason})")
 
 

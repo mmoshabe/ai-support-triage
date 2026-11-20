@@ -40,7 +40,8 @@ def settings() -> Settings:
 
 @lru_cache
 def review_store() -> ReviewStore:
-    return ReviewStore(settings().review_db)
+    s = settings()
+    return ReviewStore(s.review_db, database_url=s.database_url)
 
 
 @lru_cache
@@ -75,6 +76,23 @@ seen = Seen()
 @app.get("/health")
 def health() -> dict:
     return {"ok": True}
+
+
+@app.get("/health/deep")
+def deep_health() -> dict:
+    """Checks the deployment wiring without calling the LLM (free)."""
+    s = settings()
+    from .kb import load_articles
+
+    checks = {
+        "kb_articles": len(load_articles(s.kb_dir)),
+        "anthropic_key": bool(os.environ.get("ANTHROPIC_API_KEY")),
+        "slack_webhook": bool(s.slack_webhook_url),
+        "slack_signing_secret": bool(s.slack_signing_secret),
+        "review_store": "postgres" if s.database_url else "sqlite",
+    }
+    review_store().get("__healthcheck__")  # raises if the DB is unreachable
+    return {"ok": True, **checks}
 
 
 @app.post("/tickets", response_model=TriageResult)
