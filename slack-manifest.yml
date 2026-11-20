@@ -1,0 +1,21 @@
+# Slack app manifest: api.slack.com/apps -> Create New App -> From an app manifest.
+# Replace YOUR-TUNNEL-OR-HOST with your public URL (cloudflared tunnel or deployed host).
+display_information:
+  name: Kettle Triage Bot
+  description: Escalated support tickets with suggested replies for human approval
+  background_color: "#2c2d30"
+features:
+  bot_user:
+    display_name: Kettle Triage Bot
+    always_online: false
+oauth_config:
+  scopes:
+    bot:
+      - incoming-webhook
+settings:
+  interactivity:
+    is_enabled: true
+    request_url: https://YOUR-TUNNEL-OR-HOST/slack/actions
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
