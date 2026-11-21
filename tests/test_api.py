@@ -50,3 +50,15 @@ def test_auto_reply_is_internal_note_unless_auto_send():
     assert comment_for(r, auto_send=True) == {"body": "Hi there", "public": True}
     esc = r.model_copy(update={"decision": Decision.escalate})
     assert comment_for(esc, auto_send=True)["public"] is False
+
+
+def test_tickets_requires_token(client, monkeypatch):
+    body = {"id": "t", "subject": "s", "body": "b"}
+    monkeypatch.delenv("TRIAGE_API_TOKEN", raising=False)
+    assert client.post("/tickets", json=body).status_code == 503  # fails closed when unconfigured
+    monkeypatch.setenv("TRIAGE_API_TOKEN", "tok")
+    assert client.post("/tickets", json=body).status_code == 401
+    assert client.post("/tickets", json=body, headers={"Authorization": "Bearer nope"}).status_code == 401
+    assert client.fake.runs == []  # nothing reached the pipeline
+    ok = client.post("/tickets", json=body, headers={"Authorization": "Bearer tok"})
+    assert ok.status_code == 200 and client.fake.runs == ["t"]

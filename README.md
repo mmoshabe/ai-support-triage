@@ -68,7 +68,8 @@ Live API: `https://ai-support-triage-zeta.vercel.app`. Try `GET /health/deep`, w
 
 - FastAPI runs on Vercel (`main.py` entry point, `vercel.json` sets the FastAPI preset, Python 3.12).
 - The review store uses Neon Postgres (free plan, added through the Vercel Marketplace) when `DATABASE_URL` is set, and falls back to SQLite locally.
-- Secrets (`ANTHROPIC_API_KEY`, `SLACK_WEBHOOK_URL`, `SLACK_SIGNING_SECRET`) live in Vercel project env vars. `.vercelignore` keeps `.env` files out of uploads.
+- Secrets (`ANTHROPIC_API_KEY`, `SLACK_WEBHOOK_URL`, `SLACK_SIGNING_SECRET`, `TRIAGE_API_TOKEN`) live in Vercel project env vars.
+- `POST /tickets` requires `Authorization: Bearer $TRIAGE_API_TOKEN`, because every call costs LLM money. It fails closed if no token is configured. Slack and Zendesk endpoints verify their own signatures and secrets. `.vercelignore` keeps `.env` files out of uploads.
 - Slack Interactivity points at `/slack/actions` on the live URL. Cold starts take about 1s, inside Slack's 3s limit.
 - `uv run python scripts/slack_demo.py t003` posts a real escalation from past eval traces to Slack at no API cost. Run `vercel env pull .env.local` first so it writes to the same database as production.
 

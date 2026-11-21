@@ -2,7 +2,7 @@
 
     uv run uvicorn support_triage.api:app --reload
 
-POST /tickets            generic JSON ticket (email forwarder, scripts, demo)
+POST /tickets            generic JSON ticket; needs Authorization: Bearer $TRIAGE_API_TOKEN
 POST /webhooks/zendesk   Zendesk trigger webhook, writes the result back to the ticket
 POST /slack/actions      Slack button clicks (Approve & send / Reject) on escalations
 """
@@ -19,7 +19,7 @@ from functools import lru_cache
 from urllib.parse import parse_qs
 
 import httpx
-from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request
+from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 
 from .config import Settings
@@ -95,7 +95,18 @@ def deep_health() -> dict:
     return {"ok": True, **checks}
 
 
-@app.post("/tickets", response_model=TriageResult)
+def require_api_token(authorization: str | None = Header(default=None)) -> None:
+    """Every /tickets call costs real money (LLM calls), so it is never open.
+    Fails closed: if no token is configured, the endpoint refuses everything."""
+    expected = os.environ.get("TRIAGE_API_TOKEN")
+    if not expected:
+        raise HTTPException(status_code=503, detail="TRIAGE_API_TOKEN not configured")
+    supplied = (authorization or "").removeprefix("Bearer ").strip()
+    if not hmac.compare_digest(supplied, expected):
+        raise HTTPException(status_code=401, detail="missing or invalid API token")
+
+
+@app.post("/tickets", response_model=TriageResult, dependencies=[Depends(require_api_token)])
 async def triage(ticket: Ticket) -> TriageResult:
     return await run_in_threadpool(pipeline().run, ticket)
 
