@@ -4,6 +4,8 @@ Classifies inbound support tickets and drafts replies from a help-centre knowled
 
 The demo company is **Kettle**, a fictional invoicing app for South African small businesses. The `kb/` folder holds 12 help-centre articles and `evals/dataset.jsonl` holds 100 labelled tickets (69 dev / 31 held-out test).
 
+**Business side:** the [AI Adoption Playbook](https://github.com/mmoshabe/ai-adoption-playbook) turns this system's measured results into a business case (build vs buy, ROI), a gated rollout plan and a POPIA-aware governance checklist.
+
 ## Architecture
 
 ```mermaid
